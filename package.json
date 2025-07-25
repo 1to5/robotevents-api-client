@@ -1,0 +1,34 @@
+{
+  "name": "robotevents-api-client",
+  "version": "1.0.0",
+  "description": "A JavaScript wrapper for the RoboEvents API with caching and pagination support",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./src/types.d.ts"
+    }
+  },
+  "files": [
+    "src/",
+    "README.md"
+  ],
+  "private": true,
+  "keywords": ["robotevents", "api", "vex", "robotics"],
+  "scripts": {
+    "test": "node --env-file=.env test/test.js",
+    "test:no-env": "node test/test.js",
+    "test:integration": "node --env-file=.env test/integration-test.js",
+    "test:pagination": "node --env-file=.env test/pagination-test.js",
+    "test:cache": "node --env-file=.env test/cache-test.js",
+    "test:errors": "node --env-file=.env test/error-handling-test.js",
+    "test:all": "npm test && npm run test:integration && npm run test:pagination && npm run test:cache && npm run test:errors",
+    "example": "node --env-file=.env examples/usage.js",
+    "example:simple": "node --env-file=.env examples/simple-usage.js"
+  },
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "license": "MIT"
+}
