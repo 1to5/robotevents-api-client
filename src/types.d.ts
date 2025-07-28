@@ -4,6 +4,19 @@ export interface RobotEventsClientOptions {
   cacheTimeout?: number;
 }
 
+// Base pagination parameters
+export interface PaginationParams {
+  page?: number;
+  per_page?: number;
+}
+
+// Core request options
+export interface RequestOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  headers?: Record<string, string>;
+  params?: Record<string, any>;
+}
+
 export interface PageMeta {
   current_page: number;
   first_page_url: string;
@@ -26,7 +39,7 @@ export interface PaginatedResponse<T> {
 export interface IdInfo {
   id: number;
   name: string;
-  code?: string;
+  code?: string | null;
 }
 
 export interface Location {
@@ -49,6 +62,14 @@ export interface Division {
   order: number;
 }
 
+export type EventLevel = 'World' | 'National' | 'Regional' | 'State' | 'Signature' | 'Other';
+export type EventType = 'tournament' | 'league' | 'workshop' | 'virtual';
+export type Grade = 'College' | 'High School' | 'Middle School' | 'Elementary School';
+export type SkillType = 'driver' | 'programming' | 'package_delivery_time';
+export type AllianceColor = 'red' | 'blue';
+export type AwardDesignation = 'tournament' | 'division';
+export type AwardClassification = 'champion' | 'finalist' | 'semifinalist' | 'quarterfinalist';
+
 export interface Event {
   id: number;
   sku: string;
@@ -60,10 +81,10 @@ export interface Event {
   location: Location;
   locations?: Record<string, Location>;
   divisions?: Division[];
-  level?: 'World' | 'National' | 'Regional' | 'State' | 'Signature' | 'Other';
+  level?: EventLevel;
   ongoing?: boolean;
   awards_finalized?: boolean;
-  event_type?: 'tournament' | 'league' | 'workshop' | 'virtual';
+  event_type?: EventType;
 }
 
 export interface Team {
@@ -75,7 +96,7 @@ export interface Team {
   location?: Location;
   registered?: boolean;
   program: IdInfo;
-  grade?: 'College' | 'High School' | 'Middle School' | 'Elementary School';
+  grade?: Grade;
 }
 
 export interface Program {
@@ -100,7 +121,7 @@ export interface AllianceTeam {
 }
 
 export interface Alliance {
-  color: 'red' | 'blue';
+  color: AllianceColor;
   score: number;
   teams: AllianceTeam[];
 }
@@ -141,7 +162,7 @@ export interface Skill {
   id?: number;
   event?: IdInfo;
   team?: IdInfo;
-  type?: 'driver' | 'programming' | 'package_delivery_time';
+  type?: SkillType;
   season?: IdInfo;
   division?: IdInfo;
   rank?: number;
@@ -160,8 +181,8 @@ export interface Award {
   order?: number;
   title?: string;
   qualifications?: string[];
-  designation?: 'tournament' | 'division';
-  classification?: 'champion' | 'finalist' | 'semifinalist' | 'quarterfinalist';
+  designation?: AwardDesignation | null;
+  classification?: AwardClassification | null;
   teamWinners?: TeamAwardWinner[];
   individualWinners?: string[];
 }
@@ -171,60 +192,173 @@ export interface ApiError {
   message: string;
 }
 
+// Parameter interfaces for specific API methods
+
+export interface EventsParams extends PaginationParams {
+  id?: number[];
+  sku?: string[];
+  team?: number[];
+  season?: number[];
+  start?: string;
+  end?: string;
+  region?: string;
+  level?: EventLevel[];
+  myEvents?: boolean;
+  eventTypes?: EventType[];
+}
+
+export interface TeamsParams extends PaginationParams {
+  number?: string[];
+  event?: number[];
+  registered?: boolean;
+  program?: number[];
+  grade?: Grade[];
+  country?: string[];
+  region?: string[];
+  myTeams?: boolean;
+}
+
+export interface TeamEventsParams extends PaginationParams {
+  sku?: string[];
+  season?: number[];
+  start?: string;
+  end?: string;
+  level?: EventLevel[];
+}
+
+export interface TeamMatchesParams extends PaginationParams {
+  event?: number[];
+  season?: number[];
+  round?: number[];
+  instance?: number[];
+  matchnum?: number[];
+}
+
+export interface TeamRankingsParams extends PaginationParams {
+  event?: number[];
+  rank?: number[];
+  season?: number[];
+}
+
+export interface TeamSkillsParams extends PaginationParams {
+  event?: number[];
+  type?: SkillType[];
+  season?: number[];
+}
+
+export interface TeamAwardsParams extends PaginationParams {
+  event?: number[];
+  season?: number[];
+}
+
+export interface EventTeamsParams extends PaginationParams {
+  number?: string[];
+  registered?: boolean;
+  grade?: Grade[];
+  country?: string[];
+}
+
+export interface EventSkillsParams extends PaginationParams {
+  type?: SkillType[];
+  team?: number[];
+}
+
+export interface EventAwardsParams extends PaginationParams {
+  team?: number[];
+}
+
+export interface EventDivisionMatchesParams extends PaginationParams {
+  team?: number[];
+  round?: number[];
+  instance?: number[];
+  matchnum?: number[];
+}
+
+export interface EventDivisionRankingsParams extends PaginationParams {
+  team?: number[];
+  rank?: number[];
+}
+
+export interface ProgramsParams extends PaginationParams {
+  id?: number[];
+}
+
+export interface SeasonsParams extends PaginationParams {
+  id?: number[];
+  program?: number[];
+  team?: number[];
+  start?: string;
+  end?: string;
+  active?: boolean;
+}
+
+export interface SeasonEventsParams extends PaginationParams {
+  sku?: string[];
+  team?: number[];
+  start?: string;
+  end?: string;
+  level?: EventLevel[];
+}
+
 export declare class RobotEventsClient {
+  public readonly baseURL: string;
+  public readonly authToken?: string;
+  public cacheTimeout: number;
+  public readonly cache: Map<string, { data: any; timestamp: number }>;
+
   constructor(options?: RobotEventsClientOptions);
   
   // Core methods
-  request(endpoint: string, options?: any): Promise<any>;
+  request(endpoint: string, options?: RequestOptions): Promise<any>;
   handleResponse(response: Response): Promise<any>;
-  getAllPages(endpoint: string, params?: any): Promise<any[]>;
+  getAllPages<T>(endpoint: string, params?: Record<string, any>): Promise<T[]>;
   clearCache(): void;
   setCacheTimeout(timeout: number): void;
 
   // Events API
-  getEvents(params?: any): Promise<PaginatedResponse<Event>>;
+  getEvents(params?: EventsParams): Promise<PaginatedResponse<Event>>;
   getEvent(id: number): Promise<Event>;
-  getEventTeams(id: number, params?: any): Promise<PaginatedResponse<Team>>;
-  getEventSkills(id: number, params?: any): Promise<PaginatedResponse<Skill>>;
-  getEventAwards(id: number, params?: any): Promise<PaginatedResponse<Award>>;
-  getEventDivisionMatches(id: number, divisionId: number, params?: any): Promise<PaginatedResponse<Match>>;
-  getEventDivisionRankings(id: number, divisionId: number, params?: any): Promise<PaginatedResponse<Ranking>>;
-  getEventDivisionFinalistRankings(id: number, divisionId: number, params?: any): Promise<PaginatedResponse<Ranking>>;
+  getEventTeams(id: number, params?: EventTeamsParams): Promise<PaginatedResponse<Team>>;
+  getEventSkills(id: number, params?: EventSkillsParams): Promise<PaginatedResponse<Skill>>;
+  getEventAwards(id: number, params?: EventAwardsParams): Promise<PaginatedResponse<Award>>;
+  getEventDivisionMatches(id: number, divisionId: number, params?: EventDivisionMatchesParams): Promise<PaginatedResponse<Match>>;
+  getEventDivisionRankings(id: number, divisionId: number, params?: EventDivisionRankingsParams): Promise<PaginatedResponse<Ranking>>;
+  getEventDivisionFinalistRankings(id: number, divisionId: number, params?: EventDivisionRankingsParams): Promise<PaginatedResponse<Ranking>>;
 
   // Teams API
-  getTeams(params?: any): Promise<PaginatedResponse<Team>>;
+  getTeams(params?: TeamsParams): Promise<PaginatedResponse<Team>>;
   getTeam(id: number): Promise<Team>;
-  getTeamEvents(id: number, params?: any): Promise<PaginatedResponse<Event>>;
-  getTeamMatches(id: number, params?: any): Promise<PaginatedResponse<Match>>;
-  getTeamRankings(id: number, params?: any): Promise<PaginatedResponse<Ranking>>;
-  getTeamSkills(id: number, params?: any): Promise<PaginatedResponse<Skill>>;
-  getTeamAwards(id: number, params?: any): Promise<PaginatedResponse<Award>>;
+  getTeamEvents(id: number, params?: TeamEventsParams): Promise<PaginatedResponse<Event>>;
+  getTeamMatches(id: number, params?: TeamMatchesParams): Promise<PaginatedResponse<Match>>;
+  getTeamRankings(id: number, params?: TeamRankingsParams): Promise<PaginatedResponse<Ranking>>;
+  getTeamSkills(id: number, params?: TeamSkillsParams): Promise<PaginatedResponse<Skill>>;
+  getTeamAwards(id: number, params?: TeamAwardsParams): Promise<PaginatedResponse<Award>>;
 
   // Programs API
-  getPrograms(params?: any): Promise<PaginatedResponse<Program>>;
+  getPrograms(params?: ProgramsParams): Promise<PaginatedResponse<Program>>;
   getProgram(id: number): Promise<Program>;
 
   // Seasons API
-  getSeasons(params?: any): Promise<PaginatedResponse<Season>>;
+  getSeasons(params?: SeasonsParams): Promise<PaginatedResponse<Season>>;
   getSeason(id: number): Promise<Season>;
-  getSeasonEvents(id: number, params?: any): Promise<PaginatedResponse<Event>>;
+  getSeasonEvents(id: number, params?: SeasonEventsParams): Promise<PaginatedResponse<Event>>;
 
-  // Pagination methods
-  getAllEvents(params?: any): Promise<Event[]>;
-  getAllTeams(params?: any): Promise<Team[]>;
-  getAllEventTeams(id: number, params?: any): Promise<Team[]>;
-  getAllEventSkills(id: number, params?: any): Promise<Skill[]>;
-  getAllEventAwards(id: number, params?: any): Promise<Award[]>;
-  getAllEventDivisionMatches(id: number, divisionId: number, params?: any): Promise<Match[]>;
-  getAllEventDivisionRankings(id: number, divisionId: number, params?: any): Promise<Ranking[]>;
-  getAllTeamEvents(id: number, params?: any): Promise<Event[]>;
-  getAllTeamMatches(id: number, params?: any): Promise<Match[]>;
-  getAllTeamRankings(id: number, params?: any): Promise<Ranking[]>;
-  getAllTeamSkills(id: number, params?: any): Promise<Skill[]>;
-  getAllTeamAwards(id: number, params?: any): Promise<Award[]>;
-  getAllPrograms(params?: any): Promise<Program[]>;
-  getAllSeasons(params?: any): Promise<Season[]>;
-  getAllSeasonEvents(id: number, params?: any): Promise<Event[]>;
+  // Pagination methods - Get all data across pages
+  getAllEvents(params?: Omit<EventsParams, 'page'>): Promise<Event[]>;
+  getAllTeams(params?: Omit<TeamsParams, 'page'>): Promise<Team[]>;
+  getAllEventTeams(id: number, params?: Omit<EventTeamsParams, 'page'>): Promise<Team[]>;
+  getAllEventSkills(id: number, params?: Omit<EventSkillsParams, 'page'>): Promise<Skill[]>;
+  getAllEventAwards(id: number, params?: Omit<EventAwardsParams, 'page'>): Promise<Award[]>;
+  getAllEventDivisionMatches(id: number, divisionId: number, params?: Omit<EventDivisionMatchesParams, 'page'>): Promise<Match[]>;
+  getAllEventDivisionRankings(id: number, divisionId: number, params?: Omit<EventDivisionRankingsParams, 'page'>): Promise<Ranking[]>;
+  getAllTeamEvents(id: number, params?: Omit<TeamEventsParams, 'page'>): Promise<Event[]>;
+  getAllTeamMatches(id: number, params?: Omit<TeamMatchesParams, 'page'>): Promise<Match[]>;
+  getAllTeamRankings(id: number, params?: Omit<TeamRankingsParams, 'page'>): Promise<Ranking[]>;
+  getAllTeamSkills(id: number, params?: Omit<TeamSkillsParams, 'page'>): Promise<Skill[]>;
+  getAllTeamAwards(id: number, params?: Omit<TeamAwardsParams, 'page'>): Promise<Award[]>;
+  getAllPrograms(params?: Omit<ProgramsParams, 'page'>): Promise<Program[]>;
+  getAllSeasons(params?: Omit<SeasonsParams, 'page'>): Promise<Season[]>;
+  getAllSeasonEvents(id: number, params?: Omit<SeasonEventsParams, 'page'>): Promise<Event[]>;
 }
 
 export default RobotEventsClient;
