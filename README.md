@@ -11,21 +11,27 @@ A powerful JavaScript wrapper for the [RoboEvents API](https://www.robotevents.c
 - 🌐 **Cross-Platform** - Works in both Node.js and browser environments
 - 🔒 **Secure** - Proper auth token handling and error management
 - 🧪 **Well Tested** - Comprehensive test suite with 53 test cases
+- 📦 **GitHub Packages** - Published as a private package on GitHub Packages
 
 ## Installation
 
-This is a private npm package. Install it in your project:
+This package is published to GitHub Packages. Configure npm and install:
 
 ```bash
-npm install /path/to/robotevents-api-client
-# or if published to a private registry:
-npm install @your-org/robotevents-api-client
+# Configure npm to use GitHub Packages for @1to5 scope
+echo "@1to5:registry=https://npm.pkg.github.com" >> ~/.npmrc
+echo "//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN" >> ~/.npmrc
+
+# Install the package
+npm install @1to5/robotevents-api-client
 ```
+
+**Note:** You need a GitHub Personal Access Token with `read:packages` permission. Create one at [GitHub Settings](https://github.com/settings/tokens).
 
 ## Quick Start
 
 ```javascript
-import { RobotEventsClient } from 'robotevents-api-client';
+import { RobotEventsClient } from '@1to5/robotevents-api-client';
 
 // Initialize the client
 const client = new RobotEventsClient({
@@ -393,7 +399,7 @@ import {
   Season,
   PaginatedResponse,
   RobotEventsClientOptions 
-} from 'robotevents-api-client';
+} from '@1to5/robotevents-api-client';
 
 const options: RobotEventsClientOptions = {
   authToken: process.env.ROBOTEVENTS_TOKEN,
@@ -557,26 +563,48 @@ npm run test:watch
 
 ## Private Package Usage
 
-As a private package, you can install it via:
+### Alternative Installation Methods
 
-1. **Local installation**: 
+You can also install the package via:
+
+1. **Direct GitHub installation**: 
    ```bash
-   npm install file:../path/to/robotevents-api-client
+   npm install github:1to5/robotevents-api-client
    ```
 
-2. **Private registry**:
-   ```bash
-   npm install @your-org/robotevents-api-client
-   ```
-
-3. **Git dependency**:
+2. **Git dependency in package.json**:
    ```json
    {
      "dependencies": {
-       "robotevents-api-client": "git+https://github.com/your-org/robotevents-api-client.git"
+       "@1to5/robotevents-api-client": "github:1to5/robotevents-api-client"
      }
    }
    ```
+
+3. **Specific version from GitHub Packages**:
+   ```bash
+   npm install @1to5/robotevents-api-client@1.0.0
+   ```
+
+## Publishing
+
+This package is automatically published to GitHub Packages. For maintainers:
+
+### Quick Publish
+```bash
+# Run the automated publish script
+./scripts/publish.sh
+```
+
+### Manual Publish
+```bash
+# Update version and publish
+npm version patch  # or minor/major
+npm publish
+git push && git push --tags
+```
+
+See [PUBLISHING.md](./PUBLISHING.md) for detailed publishing instructions.
 
 ## Contributing
 

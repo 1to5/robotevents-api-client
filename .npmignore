@@ -1,0 +1,31 @@
+# Test files
+test/
+coverage/
+*.test.js
+*.spec.js
+
+# Examples and docs
+examples/
+CLAUDE.md
+TEST_RESULTS.md
+
+# Development configs
+vitest.config.js
+.env*
+.gitignore
+
+# Build artifacts
+node_modules/
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Development files
+swagger.yml
+
+# Keep only essential files for the package
+# Included via package.json "files" field:
+# - src/
+# - README.md

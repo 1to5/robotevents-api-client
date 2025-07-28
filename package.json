@@ -1,5 +1,5 @@
 {
-  "name": "robotevents-api-client",
+  "name": "@1to5/robotevents-api-client",
   "version": "1.0.0",
   "description": "A JavaScript wrapper for the RoboEvents API with caching and pagination support",
   "type": "module",
@@ -14,23 +14,29 @@
     "src/",
     "README.md"
   ],
-  "private": true,
   "keywords": [
     "robotevents",
     "api",
     "vex",
     "robotics"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1to5/robotevents-api-client.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:integration": "node --env-file=.env node_modules/.bin/vitest run test/integration.test.js",
     "test:ui": "vitest --ui",
-    "test:legacy": "node --env-file=.env test/legacy/test.js",
-    "test:legacy:all": "npm run test:legacy && node --env-file=.env test/legacy/integration-test.js && node --env-file=.env test/legacy/pagination-test.js && node --env-file=.env test/legacy/cache-test.js && node --env-file=.env test/legacy/error-handling-test.js",
     "example": "node --env-file=.env examples/usage.js",
-    "example:simple": "node --env-file=.env examples/simple-usage.js"
+    "example:simple": "node --env-file=.env examples/simple-usage.js",
+    "prepublishOnly": "npm test",
+    "postversion": "git push && git push --tags"
   },
   "engines": {
     "node": ">=20.6.0"
