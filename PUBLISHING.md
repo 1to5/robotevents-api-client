@@ -7,11 +7,12 @@ This document explains how to publish the RoboEvents API Client package to GitHu
 ### 1. GitHub Personal Access Token
 
 Create a GitHub Personal Access Token with the following permissions:
+
 - `write:packages` - To publish packages
 - `read:packages` - To install packages
 - `repo` - If the repository is private
 
-Create token at: https://github.com/settings/tokens
+Create token at: <https://github.com/settings/tokens>
 
 ### 2. Environment Setup
 
@@ -53,6 +54,7 @@ cd robotevents-api-client
 ```
 
 The script will:
+
 1. ✅ Run tests to ensure quality
 2. ✅ Prompt for version type (patch/minor/major)
 3. ✅ Update package.json version
@@ -93,6 +95,7 @@ git push && git push --tags
 ```
 
 The GitHub Action will:
+
 - ✅ Run all tests
 - ✅ Generate coverage report
 - ✅ Publish to GitHub Packages
@@ -155,6 +158,7 @@ npm publish --tag alpha
 ### Common Issues
 
 1. **Authentication Failed**
+
    ```bash
    # Re-login to GitHub Packages
    npm logout --scope=@1to5 --registry=https://npm.pkg.github.com
@@ -162,6 +166,7 @@ npm publish --tag alpha
    ```
 
 2. **Version Already Exists**
+
    ```bash
    # Check existing versions
    npm view @1to5/robotevents-api-client versions --json
@@ -178,6 +183,7 @@ npm publish --tag alpha
 ### Package Visibility
 
 GitHub Packages are visible to:
+
 - ✅ Repository collaborators
 - ✅ Organization members (if applicable)
 - ✅ Anyone with the repository link (if public repo)
@@ -187,25 +193,29 @@ GitHub Packages are visible to:
 ### Package Statistics
 
 Monitor package usage:
-- GitHub Package page: https://github.com/1to5/robotevents-api-client/packages
+
+- GitHub Package page: <https://github.com/1to5/robotevents-api-client/packages>
 - Download statistics in repository Insights
 - Package dependency graph
 
 ### CI/CD Status
 
 Check build status:
-- Actions tab: https://github.com/1to5/robotevents-api-client/actions
+
+- Actions tab: <https://github.com/1to5/robotevents-api-client/actions>
 - Test coverage reports
 - Release deployment status
 
 ## Best Practices
 
 1. **Always test before publishing**
+
    ```bash
    npm test && npm run test:coverage
    ```
 
 2. **Use meaningful commit messages**
+
    ```bash
    git commit -m "feat: add new caching mechanism"
    git commit -m "fix: resolve pagination bug"
@@ -218,6 +228,7 @@ Check build status:
    - Mention migration steps
 
 4. **Review package contents**
+
    ```bash
    # See what will be published
    npm pack --dry-run
@@ -230,6 +241,7 @@ Check build status:
 ## Support
 
 For issues with publishing:
+
 1. Check GitHub Actions logs
 2. Verify GitHub token permissions
 3. Review npm registry configuration
