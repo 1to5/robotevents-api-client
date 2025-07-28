@@ -35,12 +35,12 @@ jobs:
       - name: Publish to GitHub Packages
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.RE_ACTION_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.re_action}}
       
       - name: Create Release
         uses: actions/create-release@v1
         env:
-          RE_ACTION_TOKEN: ${{ secrets.RE_ACTION_TOKEN }}
+          re_action: ${{ secrets.re_action}}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
