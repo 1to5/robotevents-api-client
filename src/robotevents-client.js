@@ -71,10 +71,11 @@ export class RobotEventsClient {
     let allData = [];
     let page = 1;
     let hasMore = true;
+    const perPage = params.per_page || 250; // Use provided per_page or default to 250
 
     while (hasMore) {
       const response = await this.request(endpoint, {
-        params: { ...params, page, per_page: 250 }
+        params: { ...params, page, per_page: perPage }
       });
 
       if (response.data && Array.isArray(response.data)) {

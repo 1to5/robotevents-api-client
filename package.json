@@ -15,20 +15,29 @@
     "README.md"
   ],
   "private": true,
-  "keywords": ["robotevents", "api", "vex", "robotics"],
+  "keywords": [
+    "robotevents",
+    "api",
+    "vex",
+    "robotics"
+  ],
   "scripts": {
-    "test": "node --env-file=.env test/test.js",
-    "test:no-env": "node test/test.js",
-    "test:integration": "node --env-file=.env test/integration-test.js",
-    "test:pagination": "node --env-file=.env test/pagination-test.js",
-    "test:cache": "node --env-file=.env test/cache-test.js",
-    "test:errors": "node --env-file=.env test/error-handling-test.js",
-    "test:all": "npm test && npm run test:integration && npm run test:pagination && npm run test:cache && npm run test:errors",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "node --env-file=.env node_modules/.bin/vitest run test/integration.test.js",
+    "test:ui": "vitest --ui",
+    "test:legacy": "node --env-file=.env test/legacy/test.js",
+    "test:legacy:all": "npm run test:legacy && node --env-file=.env test/legacy/integration-test.js && node --env-file=.env test/legacy/pagination-test.js && node --env-file=.env test/legacy/cache-test.js && node --env-file=.env test/legacy/error-handling-test.js",
     "example": "node --env-file=.env examples/usage.js",
     "example:simple": "node --env-file=.env examples/simple-usage.js"
   },
   "engines": {
     "node": ">=20.6.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.6.1",
+    "vitest": "^1.6.0"
   },
   "license": "MIT"
 }
