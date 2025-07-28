@@ -1,6 +1,6 @@
 {
   "name": "@1to5/robotevents-api-client",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A JavaScript wrapper for the RoboEvents API with caching and pagination support",
   "type": "module",
   "main": "src/index.js",
